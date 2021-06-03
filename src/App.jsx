@@ -1,7 +1,15 @@
+import { Route, Switch } from "react-router-dom";
+
+import Routes from "./routes/routes";
+
 function App() {
   return (
     <div className="App">
-      <h1>Hello, World</h1>
+      <Switch>
+        {Routes.map(({ path, component }) => (
+          <Route path={path} component={component} />
+        ))}
+      </Switch>
     </div>
   );
 }
