@@ -1,5 +1,7 @@
 import HomePage from '../pages/home-page';
 import StarAndCancel from '../pages/start-cancel-page';
+import QuestionPage from '../pages/question-page';
+import ScorePage from '../pages/score-page';
 
 const routes = [
     {
@@ -10,6 +12,14 @@ const routes = [
     {
         path: '/start',
         component: StarAndCancel
+    },
+    {
+        path: '/question',
+        component: QuestionPage
+    },
+    {
+        path: '/score',
+        component: ScorePage
     }
 ];
 
