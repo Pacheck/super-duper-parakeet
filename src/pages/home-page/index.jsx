@@ -1,64 +1,95 @@
 import React, { useContext } from "react";
 
 import { useHistory } from "react-router-dom";
-import Button from "@material-ui/core/Button";
+
+import { makeStyles } from "@material-ui/core/styles";
+import { TextField, Container, Box, Button } from "@material-ui/core";
+
 import { Formik } from "formik";
 
 import { MyContext } from "../../container/App";
 
 import Form from "../../components/Form";
-import FormField from "../../components/FormField";
 
 import "./index.css";
 
-const HomePage = () => {
-  const history = useHistory();
-  const { userData, setUserData } = useContext(MyContext);
+const useStyles = makeStyles((theme) => ({
+  container: {
+    height: "100%",
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+}));
 
-  //remover log
-  console.log(userData);
+const HomePage = () => {
+  const classes = useStyles();
+  const history = useHistory();
+  const {
+    userData: { userName, questionsQtd },
+    setUserData,
+  } = useContext(MyContext);
 
   const handleValidateForm = ({ userName, questionsQtd }) => {
     if (!userName || !questionsQtd)
-      return console.error("nome e quantidade de perguntas requeridas");
+      return console.error("informe o nome e quantidade de perguntas");
 
     setUserData((prevState) => ({ ...prevState, userName, questionsQtd }));
+    localStorage.setItem(
+      "user",
+      JSON.stringify({
+        userName,
+        questionsQtd,
+      })
+    );
+
+    console.log(JSON.parse(localStorage.getItem("user")));
     history.push("/start");
   };
 
   return (
-    <div className="home-page">
-      <Formik
-        initialValues={{ userName: "", questionsQtd: "" }}
-        onSubmit={(values) => {
-          handleValidateForm(values);
-        }}
-      >
-        {({ values, handleChange, handleBlur, handleSubmit }) => (
-          <Form onSubmit={handleSubmit} className="Form">
-            <FormField
-              name="userName"
-              type="text"
-              placeholder="Your name"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.userName}
-            />
-            <FormField
-              name="questionsQtd"
-              type="number"
-              placeholder="Number of questions"
-              onChange={handleChange}
-              onBlur={handleBlur}
-              value={values.questionsQtd}
-            />
-            <Button type="submit" variant="contained" color="primary">
-              Continue
-            </Button>
-          </Form>
-        )}
-      </Formik>
-    </div>
+    <Box height="100vh">
+      <Container maxWidth="xs" className={classes.container}>
+        <Formik
+          initialValues={
+            userName
+              ? { userName, questionsQtd }
+              : { userName: "", questionsQtd: "" }
+          }
+          onSubmit={(values) => {
+            handleValidateForm(values);
+          }}
+        >
+          {({ values, handleChange, handleSubmit }) => (
+            <Form onSubmit={handleSubmit} className="Form">
+              <TextField
+                name="userName"
+                type="text"
+                error={!values.userName}
+                value={values.userName}
+                onChange={handleChange}
+                variant="outlined"
+                id="outlined-error"
+                label="Your name"
+              />
+              <TextField
+                name="questionsQtd"
+                type="number"
+                error={!values.questionsQtd}
+                value={values.questionsQtd}
+                onChange={handleChange}
+                variant="outlined"
+                id="outlined-error"
+                label="Number of questions"
+              />
+              <Button type="submit" variant="contained" color="primary">
+                Continue
+              </Button>
+            </Form>
+          )}
+        </Formik>
+      </Container>
+    </Box>
   );
 };
 
