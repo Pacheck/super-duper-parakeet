@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState, useEffect } from "react";
 
 import { useHistory } from "react-router-dom";
 
@@ -25,6 +25,7 @@ const useStyles = makeStyles((theme) => ({
 const HomePage = () => {
   const classes = useStyles();
   const history = useHistory();
+  const [hasOldScore, setHasOldScore] = useState(false);
   const {
     userData: { userName, questionsQtd },
     setUserData,
@@ -46,6 +47,16 @@ const HomePage = () => {
     console.log(JSON.parse(localStorage.getItem("user")));
     history.push("/start");
   };
+
+  const handleToScorePage = () => {
+    history.push("/score");
+  };
+
+  useEffect(() => {
+    if (localStorage.getItem("last-score")) {
+      setHasOldScore(true);
+    }
+  }, []);
 
   return (
     <Box height="100vh">
@@ -84,6 +95,14 @@ const HomePage = () => {
               />
               <Button type="submit" variant="contained" color="primary">
                 Continue
+              </Button>
+              <Button
+                variant="outlined"
+                color="default"
+                disabled={!hasOldScore}
+                onClick={handleToScorePage}
+              >
+                View last score
               </Button>
             </Form>
           )}
