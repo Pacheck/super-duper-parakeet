@@ -49,9 +49,6 @@ const ScorePage = () => {
 
   const classes = useStyles();
 
-  console.log(selectedAnswers);
-  console.log(questions);
-
   return (
     <Box className={classes.box}>
       <Container>
