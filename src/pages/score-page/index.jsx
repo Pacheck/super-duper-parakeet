@@ -1,14 +1,13 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { MyContext } from "../../container/App";
 
-import { Box, Container, Divider, Typography } from "@material-ui/core";
+import { Box, Container, Typography } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
 
-import { TextHelper } from "../../helper/question-page.helper";
-
 import Report from "../../components/ReportStatus";
+import ScoreResult from "../../components/ScoreResult";
 
 const useStyles = makeStyles({
   box: {
@@ -36,10 +35,11 @@ const useStyles = makeStyles({
 });
 
 const ScorePage = () => {
+  const [hasScore, setHasScore] = useState(false);
+  const [oldScore, setOldScore] = useState(null);
   const {
     userData: {
       userName,
-      questionsQtd,
       questions,
       correctAnswersCounter,
       wrongAnswersCounter,
@@ -48,6 +48,15 @@ const ScorePage = () => {
   } = useContext(MyContext);
 
   const classes = useStyles();
+
+  useEffect(() => {
+    if (localStorage.getItem("last-score") && questions.length <= 0) {
+      setHasScore(true);
+      setOldScore(JSON.parse(localStorage.getItem("last-score")));
+    } else {
+      setHasScore(false);
+    }
+  }, []);
 
   return (
     <Box className={classes.box}>
@@ -61,49 +70,12 @@ const ScorePage = () => {
             wrongAnswersCount={wrongAnswersCounter}
           />
         </Box>
-        <Box className={classes.list}>
-          {questions.map((question) => (
-            <Box key={question.question}>
-              <Typography variant="h4">
-                {TextHelper(question.question)}
-              </Typography>
-              <div>
-                <Typography
-                  variant="subtitle1"
-                  className={(classes.answer, classes.right)}
-                >
-                  {TextHelper(question.correct_answer)}
-                  <span className={classes.span}>
-                    {selectedAnswers.map((selectedAnswer) => {
-                      return selectedAnswer === question.correct_answer
-                        ? "Your answer"
-                        : "";
-                    })}
-                  </span>
-                </Typography>
-                {question.incorrect_answers.map((answer) => (
-                  <>
-                    <Divider />
-                    <Typography
-                      variant="subtitle2"
-                      className={
-                        (classes.answer, classes.spanContainer, classes.wrong)
-                      }
-                      key={Math.random()}
-                    >
-                      {TextHelper(answer)}{" "}
-                      <span className={classes.span}>
-                        {selectedAnswers.map((selecAnswer) => {
-                          return selecAnswer === answer ? "Your answer" : "";
-                        })}
-                      </span>
-                    </Typography>
-                  </>
-                ))}
-              </div>
-            </Box>
-          ))}
-        </Box>
+        <ScoreResult
+          questions={hasScore ? oldScore.questions : questions}
+          selectedAnswers={
+            hasScore ? oldScore.selectedAnswers : selectedAnswers
+          }
+        />
       </Container>
     </Box>
   );
