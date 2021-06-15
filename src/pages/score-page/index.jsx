@@ -2,13 +2,7 @@ import React, { useContext } from "react";
 
 import { MyContext } from "../../container/App";
 
-import {
-  Box,
-  Container,
-  ListItemText,
-  Divider,
-  Typography,
-} from "@material-ui/core";
+import { Box, Container, Divider, Typography } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -31,6 +25,14 @@ const useStyles = makeStyles({
   right: {
     color: "#117411",
   },
+  spanContainer: {
+    position: "relative",
+  },
+  span: {
+    position: "absolute",
+    right: "60%",
+    color: "#b3afaf",
+  },
 });
 
 const ScorePage = () => {
@@ -46,6 +48,9 @@ const ScorePage = () => {
   } = useContext(MyContext);
 
   const classes = useStyles();
+
+  console.log(selectedAnswers);
+  console.log(questions);
 
   return (
     <Box className={classes.box}>
@@ -65,25 +70,40 @@ const ScorePage = () => {
               <Typography variant="h4">
                 {TextHelper(question.question)}
               </Typography>
-              <ul>
+              <div>
                 <Typography
                   variant="subtitle1"
                   className={(classes.answer, classes.right)}
                 >
                   {TextHelper(question.correct_answer)}
+                  <span className={classes.span}>
+                    {selectedAnswers.map((selectedAnswer) => {
+                      return selectedAnswer === question.correct_answer
+                        ? "Your answer"
+                        : "";
+                    })}
+                  </span>
                 </Typography>
                 {question.incorrect_answers.map((answer) => (
                   <>
                     <Divider />
                     <Typography
                       variant="subtitle2"
-                      className={(classes.answer, classes.wrong)}
+                      className={
+                        (classes.answer, classes.spanContainer, classes.wrong)
+                      }
+                      key={Math.random()}
                     >
-                      {TextHelper(answer)}
+                      {TextHelper(answer)}{" "}
+                      <span className={classes.span}>
+                        {selectedAnswers.map((selecAnswer) => {
+                          return selecAnswer === answer ? "Your answer" : "";
+                        })}
+                      </span>
                     </Typography>
                   </>
                 ))}
-              </ul>
+              </div>
             </Box>
           ))}
         </Box>
