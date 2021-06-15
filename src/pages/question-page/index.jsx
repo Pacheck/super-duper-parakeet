@@ -41,22 +41,16 @@ const QuestionPage = (props) => {
   });
 
   const [myIndex, setMyIndex] = useState(0);
-  const {
-    userData: { questions },
-    setUserData,
-  } = useContext(MyContext);
+  const { userData, setUserData } = useContext(MyContext);
   const [mixedAnswers, setMixedAnswers] = useState([]);
   const [correctAnswer, setCorrectAnswer] = useState("");
+  const [currentRadioValue, setCurrentRadioValue] = useState(null);
 
   const history = useHistory();
 
   const handleRadioChange = (event) => {
     setValue(event.target.value);
-    setUserData((prevState) => ({
-      ...prevState,
-      selectedAnswers: [...prevState.selectedAnswers, event.target.value],
-    }));
-    // setHelperText({ tex: "", color: 'gray'}); //verificar necessidade posterior
+    setCurrentRadioValue(event.target.value);
     setError(false);
   };
 
@@ -83,6 +77,11 @@ const QuestionPage = (props) => {
   };
 
   const handleNextQuestion = () => {
+    setUserData((prevState) => ({
+      ...prevState,
+      selectedAnswers: [...prevState.selectedAnswers, currentRadioValue],
+    }));
+    console.log(currentRadioValue);
     setTimeout(() => {
       setMyIndex(myIndex + 1);
       setHelperText({ text: "Choose wisely", color: "gray" });
@@ -91,7 +90,12 @@ const QuestionPage = (props) => {
   };
 
   const handleFinish = () => {
+    setUserData((prevState) => ({
+      ...prevState,
+      selectedAnswers: [...prevState.selectedAnswers, currentRadioValue],
+    }));
     setTimeout(() => {
+      localStorage.setItem("last-score", JSON.stringify(userData));
       history.push("/score");
     }, 500);
   };
@@ -99,11 +103,11 @@ const QuestionPage = (props) => {
   useEffect(() => {
     setMixedAnswers(
       [
-        ...questions[myIndex].incorrect_answers,
-        questions[myIndex].correct_answer,
+        ...userData.questions[myIndex].incorrect_answers,
+        userData.questions[myIndex].correct_answer,
       ].sort((a, b) => 0.5 - Math.random())
     );
-    setCorrectAnswer(questions[myIndex].correct_answer);
+    setCorrectAnswer(userData.questions[myIndex].correct_answer);
   }, [myIndex]);
 
   return (
@@ -128,7 +132,7 @@ const QuestionPage = (props) => {
                 className={classes.formControl}
               >
                 <FormLabel component="legend">
-                  {TextHelper(questions[myIndex].question)}
+                  {TextHelper(userData.questions[myIndex].question)}
                 </FormLabel>
                 <RadioGroup
                   aria-label="quiz"
@@ -145,11 +149,10 @@ const QuestionPage = (props) => {
                     />
                   ))}
                 </RadioGroup>
-                {/* className={classes.style} */}
                 <FormHelperText style={{ color: helperText.color }}>
                   {helperText.text}
                 </FormHelperText>
-                {questions[myIndex + 1] ? (
+                {userData.questions[myIndex + 1] ? (
                   <Button
                     type="submit"
                     variant="outlined"
