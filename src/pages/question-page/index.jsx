@@ -81,7 +81,6 @@ const QuestionPage = (props) => {
       ...prevState,
       selectedAnswers: [...prevState.selectedAnswers, currentRadioValue],
     }));
-    console.log(currentRadioValue);
     setTimeout(() => {
       setMyIndex(myIndex + 1);
       setHelperText({ text: "Choose wisely", color: "gray" });

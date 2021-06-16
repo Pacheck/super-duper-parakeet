@@ -60,7 +60,6 @@ const ScoreResult = ({ questions, selectedAnswers }) => {
                 >
                   {TextHelper(answer)}{" "}
                   <span className={classes.span}>
-                    {console.log(selectedAnswers)}
                     {selectedAnswers.map((selecAnswer) => {
                       return selecAnswer === answer ? "Your answer" : "";
                     })}

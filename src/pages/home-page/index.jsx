@@ -44,7 +44,6 @@ const HomePage = () => {
       })
     );
 
-    console.log(JSON.parse(localStorage.getItem("user")));
     history.push("/start");
   };
 
