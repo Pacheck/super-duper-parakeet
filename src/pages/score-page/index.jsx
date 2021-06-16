@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 
 import { MyContext } from "../../container/App";
+import { useHistory } from "react-router-dom";
 
-import { Box, Container, Typography } from "@material-ui/core";
+import { Box, Container, Typography, Button } from "@material-ui/core";
 
 import { makeStyles } from "@material-ui/core/styles";
 
@@ -11,26 +12,20 @@ import ScoreResult from "../../components/ScoreResult";
 
 const useStyles = makeStyles({
   box: {
-    height: "100vh",
-    backgroundColor: "#eee",
+    height: "100%",
+    background: "linear-gradient(45deg, #FE6B8B 30%, #FF8E53 90%)",
     display: "flex",
+    padding: "40px 0px",
   },
-  answer: {
-    backgroundcolor: "black",
+  container: {
+    borderRadius: "10px",
+    backgroundColor: "#fff",
   },
-  wrong: {
-    color: "#b81717",
+  status: {
+    marginTop: "20px",
   },
-  right: {
-    color: "#117411",
-  },
-  spanContainer: {
-    position: "relative",
-  },
-  span: {
-    position: "absolute",
-    right: "60%",
-    color: "#b3afaf",
+  button: {
+    margin: "20px 0px",
   },
 });
 
@@ -47,7 +42,10 @@ const ScorePage = () => {
     },
   } = useContext(MyContext);
 
+  const history = useHistory();
   const classes = useStyles();
+
+  const handleGoToHome = () => history.push("/");
 
   useEffect(() => {
     if (localStorage.getItem("last-score") && questions.length <= 0) {
@@ -60,7 +58,7 @@ const ScorePage = () => {
 
   return (
     <Box className={classes.box}>
-      <Container>
+      <Container className={classes.container}>
         <Box className={classes.status}>
           <Typography variant="h2" gutterBottom>
             {userName},
@@ -76,6 +74,14 @@ const ScorePage = () => {
             hasScore ? oldScore.selectedAnswers : selectedAnswers
           }
         />
+        <Button
+          variant="outlined"
+          color="primary"
+          className={classes.button}
+          onClick={handleGoToHome}
+        >
+          Back to Home
+        </Button>
       </Container>
     </Box>
   );
